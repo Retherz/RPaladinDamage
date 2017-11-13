@@ -1,5 +1,5 @@
 # RPaladinDamage
-Simple World of Warcraft 1.12 Paladin Average DPS Estimation based on current stats and weapon skills assuming target has nightfall and 0 armor. This also assuems you use Judgement of Command R5 constantly and excludes Exorcism and Consecration due to their mana inefficiency, although the use of Exorcism Rank 1 is advantageous to Vengeance upkeep it is too situational and therefore left out.
+Simple World of Warcraft 1.12 Paladin Average DPS Estimation based on current stats and weapon skills assuming target has nightfall debuff and 0 armor. This also assuems you use Judgement of Command R5 constantly and excludes Exorcism and Consecration due to their mana inefficiency, although the use of Exorcism Rank 1 is advantageous to Vengeance upkeep it is too situational and therefore left out.
 
 ![image](https://i.imgur.com/nfvO7zf.png)
 
