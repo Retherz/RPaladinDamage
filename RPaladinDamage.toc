@@ -1,6 +1,6 @@
 ## Interface: 11200
 ## Title: |cffDA70D6R|rPaladinDamage
-## Version: 1.0.2
+## Version: 1.0.3
 ## Notes: Command: /rpd
 ## DefaultState: enabled
 ## Dependencies: BonusScanner

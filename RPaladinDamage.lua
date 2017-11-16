@@ -98,12 +98,12 @@ function CalculatePaladinDamage()
 	end
 		
 	vengeanceUptime = CalcVengeanceUptimeSoC(critChance, attackSpeed);
-	hits, crits, miss = CalcAAHitTable(hitBonus, dodgeChance, critChance, missChance);
+	abilityHit, hits, crits, miss = CalcAAHitTablePaladin(hitBonus, dodgeChance, critChance, missChance);
 	aaDmg = Round(CalcRetAutoAttackDamage(weaponDamage, attackSpeed, hits, crits, miss, weaponSkill, vengeanceModifier, vengeanceUptime));
 	aaDps = aaDmg / attackSpeed;
-	socDmg = CalcSoCDamage(holySpellPower, spellPower, weaponDamage, vengeanceModifier, vengeanceUptime, hits, crits, sanctityModifier, wepspecModifier);
+	socDmg = CalcSoCDamage(holySpellPower, spellPower, weaponDamage, vengeanceModifier, vengeanceUptime, abilityHit, crits, sanctityModifier, wepspecModifier);
 	socDps = ((7 / 60) * attackSpeed) *(socDmg / attackSpeed);
-	jocDmg = CalcJoCDamage(holySpellPower, spellPower, vengeanceModifier, vengeanceUptime, hits, crits, sanctityModifier);
+	jocDmg = CalcJoCDamage(holySpellPower, spellPower, vengeanceModifier, vengeanceUptime, abilityHit, dodgeChance, crits, sanctityModifier);
 	jocDps = jocDmg / judgementModifier;
 	totalDps = Round(aaDps + socDps + jocDps);
 	
@@ -111,15 +111,15 @@ function CalculatePaladinDamage()
 	SendMessage("-------------------");
 	SendMessage("DPS From SP Consumables");
 	SendMessage("Greater Arcane Elixir: ");
-	socBonus, jocBonus, consecrationBonus, exorcismBonus, totalBonus = CalcConsumableDamageBonus(35, vengeanceModifier, vengeanceUptime, sanctityModifier, wepspecModifier, hits, crits, attackSpeed);
+	socBonus, jocBonus, consecrationBonus, exorcismBonus, totalBonus = CalcConsumableDamageBonus(35, vengeanceModifier, vengeanceUptime, sanctityModifier, wepspecModifier, abilityHit, dodgeChance, crits, attackSpeed);
 	SendMessage("SoC: +" .. socBonus .. " JoC: +" .. jocBonus .. " Conc: +" .. consecrationBonus .. " !Exorcism: +" .. exorcismBonus);
 	SendMessage("Total Bonus: +" .. totalBonus ..  "/s or +" .. Round((totalBonus / totalDps) * 100) .. "% total dps.");
 	SendMessage("Arcane Elixir: ");
-	socBonus, jocBonus, consecrationBonus, exorcismBonus, totalBonus = CalcConsumableDamageBonus(20, vengeanceModifier, vengeanceUptime, sanctityModifier, wepspecModifier, hits, crits, attackSpeed);
+	socBonus, jocBonus, consecrationBonus, exorcismBonus, totalBonus = CalcConsumableDamageBonus(20, vengeanceModifier, vengeanceUptime, sanctityModifier, wepspecModifier, abilityHit, dodgeChance, crits, attackSpeed);
 	SendMessage("SoC: +" .. socBonus .. " JoC: +" .. jocBonus .. " Conc: +" .. consecrationBonus .. " !Exorcism: +" .. exorcismBonus);
 	SendMessage("Total Bonus: +" .. totalBonus ..  "/s or +" .. Round((totalBonus / totalDps) * 100) .. "% total dps.");
 	SendMessage("Flask of Supreme Power: ");
-	socBonus, jocBonus, consecrationBonus, exorcismBonus, totalBonus = CalcConsumableDamageBonus(150, vengeanceModifier, vengeanceUptime, sanctityModifier, wepspecModifier, hits, crits, attackSpeed);
+	socBonus, jocBonus, consecrationBonus, exorcismBonus, totalBonus = CalcConsumableDamageBonus(150, vengeanceModifier, vengeanceUptime, sanctityModifier, wepspecModifier, abilityHit, dodgeChance, crits, attackSpeed);
 	SendMessage("SoC: +" .. socBonus .. " JoC: +" .. jocBonus .. " Conc: +" .. consecrationBonus .. " !Exorcism: +" .. exorcismBonus);
 	SendMessage("Total Bonus: +" .. totalBonus ..  "/s or +" .. Round((totalBonus / totalDps) * 100) .. "% total dps.");
 	SendMessage("Total bonus excludes consecration and exorcism.");
@@ -134,12 +134,12 @@ function CalculatePaladinDamage()
 	SendMessage("-------------------");
 	
 	
-	hits, crits, miss = CalcAAHitTable(hitBonus + 0.01, dodgeChance, critChance, missChance);
+	abilityHit, hits, crits, miss = CalcAAHitTablePaladin(hitBonus + 0.01, dodgeChance, critChance, missChance);
 	MaaDmg = Round(CalcRetAutoAttackDamage(weaponDamage, attackSpeed, hits, crits, miss, weaponSkill, vengeanceModifier, vengeanceUptime));
-	MsocDmg = CalcSoCDamage(holySpellPower, spellPower, weaponDamage, vengeanceModifier, vengeanceUptime, hits, crits, sanctityModifier, wepspecModifier);
+	MsocDmg = CalcSoCDamage(holySpellPower, spellPower, weaponDamage, vengeanceModifier, vengeanceUptime, abilityHit, crits, sanctityModifier, wepspecModifier);
 	MsocDps = ((7 / 60) * attackSpeed) *(MsocDmg / attackSpeed);
 	MaaDps = MaaDmg / attackSpeed;
-	MjocDmg = CalcJoCDamage(holySpellPower, spellPower, vengeanceModifier, vengeanceUptime, hits, crits, sanctityModifier);
+	MjocDmg = CalcJoCDamage(holySpellPower, spellPower, vengeanceModifier, vengeanceUptime, abilityHit, dodgeChance, crits, sanctityModifier);
 	MjocDps = MjocDmg / judgementModifier;
 	newDps = Round((MaaDps + MsocDps + MjocDps) - totalDps);
 	if(newDps > 0) then
@@ -156,14 +156,14 @@ function CalculatePaladinDamage()
 	SendMessage("Adding 1% Crit results in:");
 	MvengeanceUptime = CalcVengeanceUptimeSoC(critChance + 0.01, attackSpeed);
 	SendMessage("Vengeance uptime: " .. Round((MvengeanceUptime / vengeanceUptime - 1) * 100) .. "% increase.");
-	hits, crits, miss = CalcAAHitTable(hitBonus, dodgeChance, critChance + 0.01, missChance);
+	abilityHit, hits, crits, miss = CalcAAHitTablePaladin(hitBonus, dodgeChance, critChance + 0.01, missChance);
 	MaaDmg = Round(CalcRetAutoAttackDamage(weaponDamage, attackSpeed, hits, crits, miss, weaponSkill, vengeanceModifier, MvengeanceUptime));
 	MaaDps = MaaDmg / attackSpeed;
 	SendMessage("AA: +" .. Round(MaaDmg - aaDmg) .. " or +" .. Round(MaaDps - aaDps) .. "/s.");
-	MsocDmg = CalcSoCDamage(holySpellPower, spellPower, weaponDamage, vengeanceModifier, MvengeanceUptime, hits, crits, sanctityModifier, wepspecModifier);
+	MsocDmg = CalcSoCDamage(holySpellPower, spellPower, weaponDamage, vengeanceModifier, MvengeanceUptime, abilityHit, crits, sanctityModifier, wepspecModifier);
 	MsocDps = ((7 / 60) * attackSpeed) *(MsocDmg / attackSpeed);
 	SendMessage("SoC: +" .. Round(MsocDmg - socDmg) .. " or +" .. Round(MsocDps - socDps) .. "/s.");
-	MjocDmg = CalcJoCDamage(holySpellPower, spellPower, vengeanceModifier, MvengeanceUptime, hits, crits, sanctityModifier);
+	MjocDmg = CalcJoCDamage(holySpellPower, spellPower, vengeanceModifier, MvengeanceUptime, abilityHit, dodgeChance, crits, sanctityModifier);
 	MjocDps = MjocDmg / judgementModifier;
 	SendMessage("JoC: +" .. Round(MjocDmg - jocDmg) .. " or +" .. Round(MjocDps - jocDps) .. "/s.");
 	SendMessage("Total DPS: +" .. Round((MaaDps + MsocDps + MjocDps) - totalDps));
@@ -176,23 +176,23 @@ function CalcRetAutoAttackDamage(weaponDamage, attackSpeed, hits, crits, miss, w
 	return (1 + vengeanceModifier * vengeanceUptime) * damage;
 end
 
-function CalcSoCDamage(holySpellPower, spellPower, weaponDamage, vengeanceModifier, vengeanceUptime, hits, crits, sanctityModifier, wepspecModifier)
+function CalcSoCDamage(holySpellPower, spellPower, weaponDamage, vengeanceModifier, vengeanceUptime, abilityHit, crits, sanctityModifier, wepspecModifier)
 	dmg = (holySpellPower * 0.29 + weaponDamage * 0.7 + spellPower * 0.2) * (1 + vengeanceModifier * vengeanceUptime) * sanctityModifier * wepspecModifier * 1.15;	--1.15 = nightfall
-	return hits * dmg + crits * 2 * dmg;
+	return abilityHit * dmg + crits * 2 * dmg;
 end
 
-function CalcJoCDamage(holySpellPower, spellPower, vengeanceModifier, vengeanceUptime, hits, crits, sanctityModifier)
-	dmg = (178 + (holySpellPower + spellPower) * 0.43) * (1 + vengeanceModifier * vengeanceUptime) * sanctityModifier * 1.15;	--1.15 = nightfall
-	return hits * dmg + crits * 2 * dmg;
+function CalcJoCDamage(holySpellPower, spellPower, vengeanceModifier, vengeanceUptime, abilityHit, dodgeChance, crits, sanctityModifier)
+	dmg = (187 + (holySpellPower + spellPower) * 0.43) * (1 + vengeanceModifier * vengeanceUptime) * sanctityModifier * 1.15;	--1.15 = nightfall
+	return (abilityHit + dodgeChance) * dmg + crits * 2 * dmg;
 end
 
-function CalcConsumableDamageBonus(bonus, vengeanceModifier, vengeanceUptime, sanctityModifier, wepspecModifier, hits, crits, attackSpeed)
+function CalcConsumableDamageBonus(bonus, vengeanceModifier, vengeanceUptime, sanctityModifier, wepspecModifier, abilityHit, dodgeChance, crits, attackSpeed)
 	--Soc
 	soc = (bonus * 0.2) * (1 + vengeanceModifier * vengeanceUptime) * sanctityModifier * wepspecModifier * 1.15;	--1.15 = nightfall
-	soc = hits * soc + crits * 2 * soc;	
+	soc = abilityHit * soc + crits * 2 * soc;	
 	--judgement
 	joc = (bonus * 0.43) * (1 + vengeanceModifier * vengeanceUptime) * sanctityModifier * 1.15;	--1.15 = nightfall
-	joc = hits * joc + crits * 2 * joc;
+	joc = (abilityHit + dodgeChance) * joc + crits * 2 * joc;
 	--consecration
 	consecration = (bonus / 24) * (1 + vengeanceModifier * vengeanceUptime) * sanctityModifier;
 	--exorcism
@@ -201,20 +201,21 @@ function CalcConsumableDamageBonus(bonus, vengeanceModifier, vengeanceUptime, sa
 	return Round(soc), Round(joc), Round(consecration), Round(exorcism), total;
 end
 
-function CalcAAHitTable(hitBonus, dodgeChance, critChance, missChance)
+function CalcAAHitTablePaladin(hitBonus, dodgeChance, critChance, missChance)
 	miss =  missChance - hitBonus;
 	crits = critChance;
 	if(miss < 0) then
 		miss = 0;
 	end
 	hits = 0.6 - dodgeChance - miss;			--glances are always 40%;
+	abilityHit = 1 - dodgeChance - miss - crits;
 	if((hits - crits) < 0) then
 		crits = hits;
 		hits = 0;
 	else
 		hits = hits - crits;
 	end
-	return hits, crits, miss;
+	return abilityHit, hits, crits, miss;
 end
 
 function CalcVengeanceUptimeSoC(critChance, attackSpeed)
